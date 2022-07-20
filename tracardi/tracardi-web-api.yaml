@@ -69,7 +69,7 @@ spec:
     app: tracardi-web-api
   ports:
     - protocol: TCP
-      port: 8585
+      port: 443
       targetPort: web-api-port
 
 ---
@@ -84,6 +84,6 @@ spec:
     app: tracardi-web-api
   ports:
     - protocol: TCP
-      port: 8585
+      port: 443
       targetPort: web-api-port
 

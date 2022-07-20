@@ -1,10 +1,63 @@
-apiVersion: kibana.k8s.elastic.co/v1
-kind: Kibana
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: kb-cluster
   namespace: kibana
+  labels:
+    app: kibana
 spec:
-  version: 8.2.2
-  count: 1
-  elasticsearchRef:
-    name: es-cluster
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:8.2.2
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        env:
+            - name: LOGGING_ROOT_LEVEL
+              value: info
+            - name: ELASTICSEARCH_SSL_VERIFICATIONMODE
+              value: none
+        ports:
+        - containerPort: 5601
+    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kb-cluster-svc
+  namespace: kibana
+spec:
+  type: ClusterIP
+  selector:
+    app: kb-cluster
+  ports:
+    - protocol: TCP
+      port: 5601
+      targetPort: 5601
+      
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: kb-cluster
+#   namespace: kibana
+# spec:
+#   type: LoadBalancer
+#   selector:
+#     app: kb-cluster
+#   ports:
+#     - protocol: TCP
+#       port: 5601
+#       targetPort: 5601

@@ -1,4 +1,4 @@
 *.pyc
 venv/
 .env
-
+es-cluster-es-elastic-user.yaml
